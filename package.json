@@ -1,0 +1,17 @@
+{
+  "name": "sshopen",
+  "version": "0.1.0",
+  "description": "Opens a remote url in your default browser by ssh tunneling it to a local port.",
+  "bin": "./sshopen",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eirikurn/sshopen"
+  },
+  "keywords": [
+    "ssh",
+    "mac",
+    "tunnel"
+  ],
+  "author": "Eirikur Nilsson <eirikur@nilsson.is>",
+  "license": "MIT"
+}

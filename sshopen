@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+function parse_args {
+	url=`echo $1 | sed -E 's/.+:\/\/([^:\/]+):?([^\/]*)(.*)/\1:\2:\3/g'`
+
+	host=`echo $url | cut -d : -f 1`
+	port=`echo $url | cut -d : -f 2`
+	port=${port:-80}
+	path=`echo $url | cut -d : -f 3`
+}
+
+function kill_old_tunnel {
+	pid=`ps aux | grep ssh | grep -e "-f $host" | grep :$port | awk '{print $2}'`
+	if [ ! -z "$pid" ]; then
+		kill $pid
+	fi
+}
+
+function find_local_port {
+	local_port=$port
+	quit=0
+
+	while [ "$quit" -ne 1 ]; do
+		netstat -a | grep $local_port >> /dev/null
+		if [ $? -ne 0 ]; then
+			quit=1
+		else
+			local_port=`expr $local_port + 1`
+		fi
+	done
+}
+
+function start_tunnel {
+	ssh -f $host -L $local_port:localhost:$port -N
+}
+
+function open_browser {
+	open http://localhost:$local_port$path
+}
+
+# TODO: Make haiku!
+parse_args "$@"
+kill_old_tunnel
+find_local_port
+start_tunnel
+open_browser
